@@ -33,11 +33,8 @@ jobs:
           mkdir -p jacoco
           unzip jacoco.zip -d jacoco
 
-      - name: Compile source code
-        run: |
-          mkdir -p out
-          find src/main -name "*.java" > sources.txt
-          javac -d out @sources.txt
+      - name: Build
+        run: mvn clean verify
 
       - name: Compile tests
         run: |
