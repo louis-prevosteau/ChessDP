@@ -36,7 +36,7 @@ jobs:
       - name: Compile source code
         run: |
           mkdir -p out
-          find src/core -name "*.java" > sources.txt
+          find src/main -name "*.java" > sources.txt
           javac -d out @sources.txt
 
       - name: Compile tests
@@ -55,7 +55,7 @@ jobs:
         run: |
           java -jar jacoco/lib/jacococli.jar report jacoco.exec \
             --classfiles out \
-            --sourcefiles src/core \
+            --sourcefiles src/main \
             --xml jacoco.xml
 
       - name: Upload coverage artifact
@@ -88,7 +88,7 @@ jobs:
       - name: Compile
         run: |
           mkdir -p out
-          find src/core -name "*.java" > sources.txt
+          find src/main -name "*.java" > sources.txt
           javac --release 21 -d out @sources.txt
 
       - name: SonarQube Scan
