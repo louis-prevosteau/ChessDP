@@ -38,7 +38,8 @@ jobs:
 
       - name: Compile tests
         run: |
-          find src/test -name "*.java" > test_sources.txt
+          run: |
+          find src/test/java -name "*.java" > test_sources.txt
           javac -cp junit.jar:out -d out @test_sources.txt
 
       - name: Run tests with JaCoCo
@@ -85,7 +86,7 @@ jobs:
       - name: Compile
         run: |
           mkdir -p out
-          find src/main -name "*.java" > sources.txt
+          find src/main/java -name "*.java" > sources.txt
           javac --release 21 -d out @sources.txt
 
       - name: SonarQube Scan
