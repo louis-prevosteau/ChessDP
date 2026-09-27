@@ -30,5 +30,8 @@ public class Player {
         return capturedPieces;
     }
 
-    public void capture(Piece piece) {}
+    public void capture(Piece piece) {
+        if (piece.getColor().equals(color)) throw new IllegalStateException("Un joueur ne peut pas capturer ses propres pièces.");
+        capturedPieces.add(piece);
+    }
 }

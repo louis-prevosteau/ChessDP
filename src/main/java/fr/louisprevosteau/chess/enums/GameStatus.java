@@ -8,5 +8,6 @@ public enum GameStatus {
     STALEMATE,
     DRAW,
     TIMEOUT,
+    DRAW_OFFERED,
     RESIGNED
 }

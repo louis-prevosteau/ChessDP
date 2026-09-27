@@ -7,33 +7,66 @@ import fr.louisprevosteau.chess.enums.GameStatus;
 import fr.louisprevosteau.chess.history.MoveHistory;
 import fr.louisprevosteau.chess.observer.GameListener;
 import fr.louisprevosteau.chess.state.GameState;
+import fr.louisprevosteau.chess.state.PlayingState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
 
-    private Board board;
-    private Player black, white, current;
+    private final Board board;
+    private final Player black, white;
+    private Player current;
     private GameState state;
     private GameStatus status;
-    private ChessClock clock;
-    private MoveHistory moveHistory;
+    private final ChessClock clock;
+    private final MoveHistory moveHistory;
     private CommandInvoker invoker;
     private List<GameListener> listeners;
 
     public Game(Player black, Player white, TimeControl timeControl) {
-
+        this.white = white;
+        this.black = black;
+        this.current = white;
+        this.board = new Board();
+        this.state = new PlayingState();
+        this.board.initialize();
+        this.clock = new ChessClock(timeControl);
+        this.moveHistory = new MoveHistory();
+        this.status = GameStatus.NOT_STARTED;
+        this.invoker = new CommandInvoker();
+        this.listeners = new ArrayList<>();
     }
 
-    public void start() {}
+    public void start() {
+        clock.start();
+        status = GameStatus.PLAYING;
+    }
 
-    public void playMove(Move move) {}
+    public void playMove(Move move) {
+        state.playMove(this, move);
+        moveHistory.add(move);
+        clock.switchPlayer();
+        switchPlayer();
+        notifyMovePlayed(move);
+    }
 
-    public void resign() {}
+    private void notifyMovePlayed(Move move) {
+        for (GameListener listener : listeners)
+            listener.onMovePlayed(move);
+    }
 
-    public void offerDraw() {}
+    public void resign() {
+        status = GameStatus.RESIGNED;
+    }
 
-    public void acceptDraw() {}
+    public void offerDraw() {
+        status = GameStatus.DRAW_OFFERED;
+    }
+
+    public void acceptDraw() {
+        status = GameStatus.DRAW;
+    }
 
     public Board getBoard() {
         return board;
@@ -44,7 +77,9 @@ public class Game {
     }
 
     public Player getOpponent() {
-        return null;
+        return current == white
+                ? black
+                : white;
     }
 
     public GameStatus getStatus() {
@@ -63,17 +98,36 @@ public class Game {
         this.state = state;
     }
 
-    public void switchOPlayer() {}
+    public void switchPlayer() {
+        current = (current == white)
+                ? black
+                : white;
+    }
 
-    public void addListener(GameListener listener) {}
+    public void addListener(GameListener listener) {
+        listeners.add(listener);
+    }
 
-    public void removeListener(GameListener listener) {}
+    public void removeListener(GameListener listener) {
+        listeners.remove(listener);
+    }
 
     public boolean isGameOver() {
-        return false;
+        return status == GameStatus.CHECKMATE
+                || status == GameStatus.STALEMATE
+                || status == GameStatus.RESIGNED
+                || status == GameStatus.TIMEOUT
+                || status == GameStatus.DRAW;
     }
 
     public GameResult getResult() {
-        return null;
+        if (status.equals(GameStatus.DRAW))
+            return new GameResult(status);
+        else
+            return new GameResult(status, getOpponent().getColor());
+    }
+
+    public List<GameListener> getListeners() {
+        return listeners;
     }
 }

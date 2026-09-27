@@ -9,6 +9,7 @@ public class Square {
 
     public Square(Position position) {
         this.position = position;
+        this.piece = null;
 
     }
 
@@ -25,10 +26,10 @@ public class Square {
     }
 
     public boolean isOccupied() {
-        return false;
+        return piece != null;
     }
 
     public boolean isEmpty() {
-        return false;
+        return piece == null;
     }
 }

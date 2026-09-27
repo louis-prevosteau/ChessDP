@@ -18,7 +18,12 @@ public class ChessClock {
         this.timeControl = timeControl;
     }
 
-    public void start() {}
+    public void start() {
+        whiteTime = timeControl.getInitialTime();
+        blackTime = timeControl.getInitialTime();
+        runningColor = Color.WHITE;
+        running = true;
+    }
 
     public void stop() {}
 
@@ -28,7 +33,13 @@ public class ChessClock {
 
     public void tick() {}
 
-    public void switchPlayer() {}
+    public void switchPlayer() {
+        if (!running) return;
+        runningColor =
+                (runningColor == Color.WHITE)
+                        ? Color.BLACK
+                        : Color.WHITE;
+    }
 
     public void addIncrement() {}
 

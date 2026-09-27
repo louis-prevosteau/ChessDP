@@ -31,10 +31,10 @@ public class GameResult {
     }
 
     public boolean isDraw() {
-        return false;
+        return status.equals(GameStatus.STALEMATE) || status.equals(GameStatus.DRAW);
     }
 
     public boolean hasWinner() {
-        return false;
+        return status.equals(GameStatus.CHECKMATE) || status.equals(GameStatus.TIMEOUT) || status.equals(GameStatus.RESIGNED);
     }
 }

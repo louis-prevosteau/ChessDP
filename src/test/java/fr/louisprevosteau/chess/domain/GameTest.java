@@ -3,6 +3,7 @@ package fr.louisprevosteau.chess.domain;
 import fr.louisprevosteau.chess.clock.TimeControl;
 import fr.louisprevosteau.chess.enums.Color;
 import fr.louisprevosteau.chess.enums.GameStatus;
+import fr.louisprevosteau.chess.observer.GameListener;
 import org.junit.jupiter.api.*;
 
 import java.time.Duration;
@@ -78,7 +79,7 @@ public class GameTest {
     @DisplayName("switchPlayer() doit passer au joueur adverse")
     void testSwitchPlayer() {
 
-        game.switchOPlayer();
+        game.switchPlayer();
 
         assertEquals(
                 black,
@@ -95,8 +96,8 @@ public class GameTest {
     @DisplayName("switchPlayer() appelé deux fois doit revenir au joueur initial")
     void testSwitchPlayerTwice() {
 
-        game.switchOPlayer();
-        game.switchOPlayer();
+        game.switchPlayer();
+        game.switchPlayer();
 
         assertEquals(
                 white,
@@ -137,6 +138,159 @@ public class GameTest {
 
         assertNotNull(
                 game.getMoveHistory()
+        );
+    }
+
+    @Test
+    @DisplayName("start() doit démarrer la partie")
+    void testStartGame() {
+
+        game.start();
+
+        assertEquals(
+                GameStatus.PLAYING,
+                game.getStatus()
+        );
+
+        assertTrue(
+                game.getClock().isRunning()
+        );
+    }
+
+    @Test
+    @DisplayName("playMove() doit jouer le coup et changer le joueur")
+    void testPlayMove() {
+
+        Position from = new Position(1, 0);
+        Position to = new Position(2, 0);
+
+        Move move = new Move(from, to);
+
+        game.getBoard().initialize();
+
+        game.playMove(move);
+
+        assertEquals(
+                move,
+                game.getMoveHistory().getLastMove()
+        );
+
+        assertEquals(
+                black,
+                game.getCurrent()
+        );
+    }
+
+    @Test
+    @DisplayName("resign() doit terminer la partie")
+    void testResign() {
+
+        game.resign();
+
+        assertTrue(
+                game.isGameOver()
+        );
+
+        assertEquals(
+                GameStatus.RESIGNED,
+                game.getStatus()
+        );
+    }
+
+    @Test
+    @DisplayName("offerDraw() doit enregistrer une proposition de nulle")
+    void testOfferDraw() {
+
+        game.offerDraw();
+
+        assertEquals(
+                GameStatus.DRAW_OFFERED,
+                game.getStatus()
+        );
+    }
+
+    @Test
+    @DisplayName("acceptDraw() doit terminer la partie par une nulle")
+    void testAcceptDraw() {
+
+        game.offerDraw();
+
+        game.acceptDraw();
+
+        assertTrue(
+                game.isGameOver()
+        );
+
+        assertEquals(
+                GameStatus.DRAW,
+                game.getStatus()
+        );
+    }
+
+    /***
+     @Test
+     @DisplayName("addListener() doit ajouter un listener")
+     void testAddListener() {
+
+     GameListener listener;
+
+     game.addListener(listener);
+
+     assertTrue(
+     game.getListeners()
+     .contains(listener)
+     );
+     }
+
+     @Test
+     @DisplayName("removeListener() doit retirer un listener")
+     void testRemoveListener() {
+
+     GameListener listener;
+
+     game.addListener(listener);
+
+     game.removeListener(listener);
+
+     assertFalse(
+     game.getListeners()
+     .contains(listener)
+     );
+     }
+     */
+
+    @Test
+    @DisplayName("getResult() doit retourner le résultat après abandon")
+    void testGetResultAfterResignation() {
+
+        game.resign();
+
+        GameResult result =
+                game.getResult();
+
+        assertNotNull(result);
+
+        assertTrue(
+                result.hasWinner()
+        );
+    }
+
+    @Test
+    @DisplayName("getResult() doit retourner une nulle")
+    void testGetResultAfterDraw() {
+
+        game.offerDraw();
+        game.acceptDraw();
+
+        GameResult result =
+                game.getResult();
+
+        assertTrue(
+                result.isDraw()
+        );
+
+        assertFalse(
+                result.hasWinner()
         );
     }
 }

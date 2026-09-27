@@ -1,5 +1,7 @@
 package fr.louisprevosteau.chess.domain;
 
+import java.util.Objects;
+
 public class Position {
 
     private final int row, column;
@@ -18,15 +20,18 @@ public class Position {
     }
 
     public boolean isValid() {
-        return false;
+        return (row >= 0 && row <= 7) && (column >= 0 && column <= 7);
     }
 
     public boolean isSame(Position position) {
-        return false;
+        return position != null && position.row == row && position.column == column;
     }
 
     public Position offset(int rowOffset, int columnOffset) {
-        return null;
+        return new Position(
+                row + rowOffset,
+                column + columnOffset
+        );
     }
 
     @Override
@@ -35,5 +40,25 @@ public class Position {
                 "row=" + row +
                 ", column=" + column +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Position position)) {
+            return false;
+        }
+
+        return row == position.row
+                && column == position.column;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column);
     }
 }

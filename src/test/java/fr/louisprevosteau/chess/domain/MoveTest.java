@@ -19,7 +19,7 @@ public class MoveTest {
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
 
-        assertNull(move.getType());
+        assertEquals(MoveType.NORMAL, move.getType());
         assertNull(move.getMovedPiece());
         assertNull(move.getCapturedPiece());
         assertNull(move.getPromotionType());
