@@ -7,6 +7,7 @@ import fr.louisprevosteau.chess.enums.GameStatus;
 import fr.louisprevosteau.chess.history.MoveHistory;
 import fr.louisprevosteau.chess.observer.GameListener;
 import fr.louisprevosteau.chess.state.GameState;
+import fr.louisprevosteau.chess.state.NotStartedState;
 import fr.louisprevosteau.chess.state.PlayingState;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Game {
         this.black = black;
         this.current = white;
         this.board = new Board();
-        this.state = new PlayingState();
+        this.state = new NotStartedState();
         this.board.initialize();
         this.clock = new ChessClock(timeControl);
         this.moveHistory = new MoveHistory();
@@ -41,6 +42,7 @@ public class Game {
     public void start() {
         clock.start();
         status = GameStatus.PLAYING;
+        state = new PlayingState();
     }
 
     public void playMove(Move move) {

@@ -7,7 +7,9 @@ public class DrawState implements GameState {
 
     @Override
     public void playMove(Game game, Move move) {
-
+        throw new IllegalStateException(
+                "La partie est terminée par une nulle"
+        );
     }
 
     @Override

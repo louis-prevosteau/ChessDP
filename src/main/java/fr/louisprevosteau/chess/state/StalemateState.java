@@ -7,7 +7,7 @@ public class StalemateState implements GameState {
 
     @Override
     public void playMove(Game game, Move move) {
-
+        throw new IllegalStateException("La partie est terminée par pat.");
     }
 
     @Override

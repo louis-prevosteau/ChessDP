@@ -7,7 +7,7 @@ public class TimeoutState implements GameState {
 
     @Override
     public void playMove(Game game, Move move) {
-
+        throw new IllegalStateException("La partie est terminée au temps.");
     }
 
     @Override

@@ -7,11 +7,11 @@ public class CheckState implements GameState {
 
     @Override
     public void playMove(Game game, Move move) {
-
+        game.getBoard().movePiece(move);
     }
 
     @Override
     public boolean canPlay() {
-        return false;
+        return true;
     }
 }
