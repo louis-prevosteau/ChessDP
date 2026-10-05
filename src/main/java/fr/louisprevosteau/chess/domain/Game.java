@@ -6,9 +6,7 @@ import fr.louisprevosteau.chess.command.CommandInvoker;
 import fr.louisprevosteau.chess.enums.GameStatus;
 import fr.louisprevosteau.chess.history.MoveHistory;
 import fr.louisprevosteau.chess.observer.GameListener;
-import fr.louisprevosteau.chess.state.GameState;
-import fr.louisprevosteau.chess.state.NotStartedState;
-import fr.louisprevosteau.chess.state.PlayingState;
+import fr.louisprevosteau.chess.state.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +20,8 @@ public class Game {
     private GameStatus status;
     private final ChessClock clock;
     private final MoveHistory moveHistory;
-    private CommandInvoker invoker;
-    private List<GameListener> listeners;
+    private final CommandInvoker invoker;
+    private final List<GameListener> listeners;
 
     public Game(Player black, Player white, TimeControl timeControl) {
         this.white = white;
@@ -60,6 +58,7 @@ public class Game {
 
     public void resign() {
         status = GameStatus.RESIGNED;
+        state = new ResignedState();
     }
 
     public void offerDraw() {
@@ -68,6 +67,7 @@ public class Game {
 
     public void acceptDraw() {
         status = GameStatus.DRAW;
+        state = new DrawState();
     }
 
     public Board getBoard() {
@@ -123,13 +123,25 @@ public class Game {
     }
 
     public GameResult getResult() {
-        if (status.equals(GameStatus.DRAW))
+        if (status == GameStatus.DRAW) {
             return new GameResult(status);
-        else
-            return new GameResult(status, getOpponent().getColor());
+        }
+
+        if (status == GameStatus.RESIGNED) {
+            return new GameResult(
+                    status,
+                    getOpponent().getColor()
+            );
+        }
+
+        return new GameResult(status);
     }
 
     public List<GameListener> getListeners() {
         return listeners;
+    }
+
+    public CommandInvoker getInvoker() {
+        return invoker;
     }
 }

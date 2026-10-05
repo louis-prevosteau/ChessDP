@@ -160,7 +160,7 @@ public class GameTest {
     @Test
     @DisplayName("playMove() doit jouer le coup et changer le joueur")
     void testPlayMove() {
-
+        game.start();
         Position from = new Position(1, 0);
         Position to = new Position(2, 0);
 
