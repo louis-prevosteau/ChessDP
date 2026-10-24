@@ -29,18 +29,32 @@ public abstract class Piece {
     }
 
     public List<Move> getLegalMoves(Position position, Board board) {
-        return null;
+        if (position == null || board == null || !position.isValid()) {
+            return List.of();
+        }
+
+        if (movementStrategy == null) {
+            return List.of();
+        }
+
+        return movementStrategy.getLegalMoves(position, board);
     }
 
-    public boolean isEnemy() {
-        return false;
+    public boolean isEnemy(Piece other) {
+        return other != null && color != other.getColor();
     }
 
-    public boolean isSameColor() {
-        return false;
+    public boolean isSameColor(Piece other) {
+        return other != null && color == other.getColor();
     }
 
-    public boolean canMoveTo(Position position, Board board) {
-        return false;
+    public boolean canMoveTo(Position from, Position to , Board board) {
+        if (from == null || to == null || board == null
+                || !from.isValid() || !to.isValid()) {
+            return false;
+        }
+
+        return getLegalMoves(from, board).stream()
+                .anyMatch(move -> move.getTo().equals(to));
     }
 }

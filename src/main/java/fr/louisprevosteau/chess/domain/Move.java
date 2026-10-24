@@ -4,6 +4,8 @@ import fr.louisprevosteau.chess.enums.MoveType;
 import fr.louisprevosteau.chess.enums.PromotionType;
 import fr.louisprevosteau.chess.pieces.Piece;
 
+import java.util.Objects;
+
 public class Move {
 
     private final Position from, to;
@@ -57,5 +59,24 @@ public class Move {
 
     public boolean isEnPassant() {
         return type.equals(MoveType.EN_PASSANT);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Move other)) {
+            return false;
+        }
+
+        return from.equals(other.from)
+                && to.equals(other.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to);
     }
 }
